@@ -18,8 +18,12 @@ export function buildTemplate(template: string, title: string, url: string) {
   return template.replaceAll("${title}", title).replaceAll("${url}", url);
 }
 
-export function copyToClipboard(template: string, title: string, url: string) {
-  console.log("copyToClipboard", template, title, url);
+export function copyTemplateToClipboard(
+  template: string,
+  title: string,
+  url: string
+) {
+  console.log("copyTemplateToClipboard", template, title, url);
 
   const textToCopy = buildTemplate(template, title, url);
 
@@ -32,4 +36,10 @@ export function copyToClipboard(template: string, title: string, url: string) {
   document.removeEventListener("copy", listener);
 
   console.log("Successfully copied to clipboard: " + textToCopy);
+}
+
+export function copyToClipboard(str: string) {
+  console.log("copyToClipboard", str);
+  navigator.clipboard.writeText(str);
+  console.log("Successfully copied to clipboard: " + str);
 }

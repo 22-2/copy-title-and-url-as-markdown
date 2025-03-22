@@ -1,5 +1,10 @@
 import { INITIAL_OPTION_VALUES } from "./constant";
-import { escapeBrackets, copyToClipboard } from "./util";
+import {
+  escapeBrackets,
+  copyTemplateToClipboard,
+  buildTemplate,
+  copyToClipboard,
+} from "./util";
 
 chrome.commands.onCommand.addListener((command) => {
   console.log("Command:", command);
@@ -24,10 +29,12 @@ chrome.commands.onCommand.addListener((command) => {
       console.log(tab.url, tab.title);
       console.log(options);
 
+      const replaced = buildTemplate(options[key], title, escapeBrackets(url));
+
       chrome.scripting.executeScript({
         target: { tabId },
         func: copyToClipboard,
-        args: [options[key], title, escapeBrackets(url)],
+        args: [replaced],
       });
 
       chrome.action.setBadgeText({ text: formatIndex });

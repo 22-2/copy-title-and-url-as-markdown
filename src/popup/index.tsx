@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Popup } from "./Popup";
-import { escapeBrackets, copyToClipboard } from "../util";
+import { escapeBrackets, copyTemplateToClipboard } from "../util";
 import { DEFAULT_FORMAT } from "../constant";
 
 const queryInfo = {
@@ -14,7 +14,7 @@ chrome.tabs.query(queryInfo, function (tabs) {
     const tab = tabs[0];
     const title = tab.title || "";
     const url = tab.url || "";
-    copyToClipboard(options.format, title, escapeBrackets(url));
+    copyTemplateToClipboard(options.format, title, escapeBrackets(url));
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     ReactDOM.createRoot(document.getElementById("root")!).render(
