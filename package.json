@@ -8,7 +8,6 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "postinstall": "cp -r node_modules/@salesforce-ux/design-system/assets public",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "zip": "bestzip dist.zip dist/*",
@@ -28,10 +27,10 @@
   },
   "homepage": "https://github.com/zaki-yama/copy-title-and-url-as-markdown#readme",
   "dependencies": {
-    "@salesforce-ux/design-system": "2.18.1",
-    "react": "18.2.0",
+    "@ant-design/icons": "latest",
+    "antd": "latest",
     "react-dom": "18.2.0",
-    "react-lightning-design-system": "5.2.5"
+    "react": "18.2.0"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "1.0.14",

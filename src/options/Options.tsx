@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Toast } from "react-lightning-design-system";
+import { Form, Input, Button, Alert, Space, Typography } from "antd";
 import { unescapeTabsAndNewLines, escapeTabsAndNewLines } from "../util";
 import { INITIAL_OPTION_VALUES } from "../constant";
 
-import "./Options.css";
+import "./Options.css"; // Ant Design のスタイルに合うように調整が必要
+
+const { Text } = Typography;
 
 export type OptionsType = {
   format: string;
@@ -18,72 +20,86 @@ export const Options: React.FC = () => {
     optionalFormat2: "",
   });
   const [showToast, setShowToast] = useState(false);
+  const [form] = Form.useForm();
+
 
   useEffect(() => {
     chrome.storage.local.get(INITIAL_OPTION_VALUES, (savedOptions) => {
-      setOptions({
+      const escapedOptions = {
         format: escapeTabsAndNewLines(savedOptions.format),
         optionalFormat1: escapeTabsAndNewLines(savedOptions.optionalFormat1),
         optionalFormat2: escapeTabsAndNewLines(savedOptions.optionalFormat2),
-      });
-    });
-  }, []);
+      };
 
-  const handleChange = (key: keyof OptionsType, value: string) => {
-    setOptions({ ...options, [key]: value });
-  };
+      setOptions(escapedOptions);
+      form.setFieldsValue(escapedOptions); // フォームの初期値を設定
+    });
+  }, [form]);
+
 
   const onSave = () => {
-    chrome.storage.local.set(
-      {
-        format: unescapeTabsAndNewLines(options.format),
-        optionalFormat1: unescapeTabsAndNewLines(options.optionalFormat1),
-        optionalFormat2: unescapeTabsAndNewLines(options.optionalFormat2),
-      },
-      () => {
-        setShowToast(true);
-      }
-    );
+    form.validateFields()
+      .then(values => {
+
+        const unescapedValues = {
+          format: unescapeTabsAndNewLines(values.format),
+          optionalFormat1: unescapeTabsAndNewLines(values.optionalFormat1),
+          optionalFormat2: unescapeTabsAndNewLines(values.optionalFormat2),
+        };
+
+        chrome.storage.local.set(unescapedValues, () => {
+            setShowToast(true);
+        });
+      })
+      .catch(errorInfo => {
+        console.log('Validate Failed:', errorInfo);
+      });
   };
+
 
   return (
     <div className="optionsContainer">
-      {showToast ? (
-        <Toast
-          className="toast"
-          level="success"
-          icon="success"
-          onClose={() => setShowToast(false)}
-        >
-          Successfully Saved.
-        </Toast>
-      ) : null}
-      <div className="slds-text-heading_medium slds-m-bottom_small">
-        Options
-      </div>
-      <div>
-        You can use <code>\n</code> for new lines, and <code>\t</code> for tabs.
-      </div>
-      <Form className="form">
-        <Input
-          label="Format"
-          onChange={(e) => handleChange("format", e.target.value)}
-          value={options.format}
-        />
-        <Input
-          label="Optional Format #1"
-          onChange={(e) => handleChange("optionalFormat1", e.target.value)}
-          value={options.optionalFormat1}
-        />
-        <Input
-          label="Optional Format #2"
-          onChange={(e) => handleChange("optionalFormat2", e.target.value)}
-          value={options.optionalFormat2}
-        />
-        <Button className="slds-m-top_medium" type="brand" onClick={onSave}>
-          Save
-        </Button>
-      </Form>
+        {showToast && (
+            <Alert
+              message="Successfully Saved."
+              type="success"
+              closable
+              onClose={() => setShowToast(false)}
+              style={{marginBottom: 16}}
+            />
+        )}
+      <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <Text strong style={{ fontSize: '1.2em'}}>Options</Text>
+        <div>
+          You can use <code>\n</code> for new lines, and <code>\t</code> for tabs.
+        </div>
+        <Form form={form} layout="vertical" >
+          <Form.Item
+            label="Format"
+            name="format"
+            rules={[{ required: true, message: 'Please input format!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Optional Format #1"
+            name="optionalFormat1"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Optional Format #2"
+            name="optionalFormat2"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" onClick={onSave}>
+              Save
+            </Button>
+          </Form.Item>
+        </Form>
+      </Space>
     </div>
   );
 };
