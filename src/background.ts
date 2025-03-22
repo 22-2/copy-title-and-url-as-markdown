@@ -24,10 +24,12 @@ chrome.commands.onCommand.addListener((command) => {
       console.log(tab.url, tab.title);
       console.log(options);
 
+      const replaced = escapeBrackets(url);
+
       chrome.scripting.executeScript({
         target: { tabId },
         func: copyToClipboard,
-        args: [options[key], title, escapeBrackets(url)],
+        args: [options[key], title, replaced],
       });
 
       chrome.action.setBadgeText({ text: formatIndex });
