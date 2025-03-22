@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - momon # momon ブランチへのプッシュ時に実行
+    tags:
+      - "v*"
   workflow_dispatch: # 手動実行を許可
 
 jobs:
