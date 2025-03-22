@@ -13,13 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Checkout code
         uses: oven-sh/setup-bun@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20.x" # Node.js のバージョンは package.json に合わせて調整
 
       - name: Install dependencies
         run: bun install --legacy-peer-deps
@@ -46,13 +44,11 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/') # タグがプッシュされた場合のみ実行
 
     steps:
-      - name: Checkout code
-        uses: oven-sh/setup-bun@v2
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20.x"
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: bun install --legacy-peer-deps
