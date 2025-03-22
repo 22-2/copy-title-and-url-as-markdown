@@ -1,7 +1,10 @@
 import React from "react";
-import { Icon, Grid, Row } from "react-lightning-design-system";
+import { Typography, Space, Divider } from "antd";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
-import "./Popup.css";
+import "./Popup.css"; // Ant Design のスタイルに合うように調整が必要
+
+const { Title, Text, Link } = Typography;
 
 type Props = {
   title: string;
@@ -10,21 +13,16 @@ type Props = {
 
 export const Popup: React.FC<Props> = ({ title, url }) => {
   return (
-    <Grid className="slds-gutters">
-      <Row cols={1} align="center">
-        <Icon category="action" icon="approval" container="circle" />
-      </Row>
-      <Row cols={1}>
-        <div className="slds-text-heading_small">{title}</div>
-      </Row>
-      <Row cols={1}>
-        <div
-          className="slds-text-body_small"
-          style={{ wordBreak: "break-all" }}
-        >
-          {url}
-        </div>
-      </Row>
-    </Grid>
+    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+      <Space>
+        <CheckCircleOutlined style={{ fontSize: "24px", color: "#52c41a" }} />
+      </Space>
+
+      <Title level={4} style={{ margin: 0, textAlign: "center" }}>
+        {title}
+      </Title>
+
+      <Text style={{ wordBreak: "break-all" }}>{url}</Text>
+    </Space>
   );
 };
