@@ -20,7 +20,7 @@ jobs:
           node-version: "20.x" # Node.js のバージョンは package.json に合わせて調整
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Run lint
         run: npm run lint
@@ -53,7 +53,7 @@ jobs:
           node-version: "20.x"
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Download artifact
         uses: actions/download-artifact@v4
