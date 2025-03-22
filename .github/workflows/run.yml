@@ -1,0 +1,77 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - momon # momon ブランチへのプッシュ時に実行
+    tags:
+      - "v*"
+  workflow_dispatch: # 手動実行を許可
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout code
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --legacy-peer-deps
+
+      - name: Build project
+        run: bun run build # vite build を実行
+
+      - name: Zip artifact
+        run: bun run zip # dist.zip を作成。package.json のスクリプトを利用
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-zip
+          path: dist.zip
+
+  # Release Job (optional, triggered on tag push)
+  release:
+    needs: build # build jobが成功したら実行
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/') # タグがプッシュされた場合のみ実行
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --legacy-peer-deps
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-zip
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist.zip
+          asset_name: dist.zip
+          asset_content_type: application/zip
