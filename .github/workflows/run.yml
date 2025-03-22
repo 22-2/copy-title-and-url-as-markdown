@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: oven-sh/setup-bun@v2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -22,16 +22,16 @@ jobs:
           node-version: "20.x" # Node.js のバージョンは package.json に合わせて調整
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: bun install --legacy-peer-deps
 
       - name: Run lint
-        run: npm run lint
+        run: bun run lint
 
       - name: Build project
-        run: npm run build # vite build を実行
+        run: bun run build # vite build を実行
 
       - name: Zip artifact
-        run: npm run zip # dist.zip を作成。package.json のスクリプトを利用
+        run: bun run zip # dist.zip を作成。package.json のスクリプトを利用
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: oven-sh/setup-bun@v2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -55,7 +55,7 @@ jobs:
           node-version: "20.x"
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: bun install --legacy-peer-deps
 
       - name: Download artifact
         uses: actions/download-artifact@v4
