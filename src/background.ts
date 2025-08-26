@@ -70,7 +70,13 @@ chrome.commands.onCommand.addListener((command) => {
           }
 
           const customTitle = response?.title;
-          const titleToUse = customTitle || tab.title || "";
+          const originalTitle = tab.title || "";
+
+          // カスタムタイトルがあれば元のタイトルと結合し、なければ元のタイトルをそのまま使う
+          const titleToUse = customTitle
+            ? `${customTitle} | ${originalTitle}`
+            : originalTitle;
+
           executeCopy(options, commandKey, tab, titleToUse);
         }
       );

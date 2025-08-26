@@ -45,7 +45,13 @@ chrome.tabs.query(queryInfo, function (tabs) {
         }
 
         const customTitle = response?.title;
-        const titleToUse = customTitle || tab.title || "";
+        const originalTitle = tab.title || "";
+
+        // カスタムタイトルがあれば元のタイトルと結合し、なければ元のタイトルをそのまま使う
+        const titleToUse = customTitle
+          ? `${customTitle} | ${originalTitle}`
+          : originalTitle;
+
         renderPopupAndCopy(options.format, titleToUse, tab.url || "");
       }
     );
