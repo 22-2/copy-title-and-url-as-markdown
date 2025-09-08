@@ -42,6 +42,7 @@ const RAW_RUNTIME_STATE =
           ["antd", "virtual:89b8875ce8d0c2898d04114a2b51e05e49f74fb8da23d46282dfae0bdda6945d613f31c0cdc6b9b16d61998668e281d2a2a0c870f723696a8c8d3d9804879e24#npm:5.27.1"],\
           ["bestzip", "npm:2.2.1"],\
           ["copy-title-and-url-as-markdown", "workspace:."],\
+          ["copy-to-clipboard", "npm:3.3.3"],\
           ["eslint", "virtual:89b8875ce8d0c2898d04114a2b51e05e49f74fb8da23d46282dfae0bdda6945d613f31c0cdc6b9b16d61998668e281d2a2a0c870f723696a8c8d3d9804879e24#npm:9.34.0"],\
           ["react", "npm:19.1.1"],\
           ["react-dom", "virtual:89b8875ce8d0c2898d04114a2b51e05e49f74fb8da23d46282dfae0bdda6945d613f31c0cdc6b9b16d61998668e281d2a2a0c870f723696a8c8d3d9804879e24#npm:19.1.1"],\
@@ -4307,6 +4308,7 @@ const RAW_RUNTIME_STATE =
           ["antd", "virtual:89b8875ce8d0c2898d04114a2b51e05e49f74fb8da23d46282dfae0bdda6945d613f31c0cdc6b9b16d61998668e281d2a2a0c870f723696a8c8d3d9804879e24#npm:5.27.1"],\
           ["bestzip", "npm:2.2.1"],\
           ["copy-title-and-url-as-markdown", "workspace:."],\
+          ["copy-to-clipboard", "npm:3.3.3"],\
           ["eslint", "virtual:89b8875ce8d0c2898d04114a2b51e05e49f74fb8da23d46282dfae0bdda6945d613f31c0cdc6b9b16d61998668e281d2a2a0c870f723696a8c8d3d9804879e24#npm:9.34.0"],\
           ["react", "npm:19.1.1"],\
           ["react-dom", "virtual:89b8875ce8d0c2898d04114a2b51e05e49f74fb8da23d46282dfae0bdda6945d613f31c0cdc6b9b16d61998668e281d2a2a0c870f723696a8c8d3d9804879e24#npm:19.1.1"],\

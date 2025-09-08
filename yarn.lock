@@ -3122,6 +3122,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:5.0.1"
     antd: "npm:^5.27.1"
     bestzip: "npm:2.2.1"
+    copy-to-clipboard: "npm:^3.3.3"
     eslint: "npm:9.34.0"
     react: "npm:19.1.1"
     react-dom: "npm:19.1.1"

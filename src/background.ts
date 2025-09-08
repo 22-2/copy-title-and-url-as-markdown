@@ -1,5 +1,6 @@
 import { INITIAL_OPTION_VALUES } from "./constant";
-import { buildTemplate, copyToClipboard, escapeBrackets } from "./util";
+import { buildTemplate, escapeBrackets } from "./util";
+import copy from "copy-to-clipboard";
 
 function executeCopy(
   options: any,
@@ -22,7 +23,7 @@ function executeCopy(
 
   chrome.scripting.executeScript({
     target: { tabId },
-    func: copyToClipboard,
+    func: copy,
     args: [replaced],
   });
 
