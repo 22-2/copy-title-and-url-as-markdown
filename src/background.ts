@@ -1,5 +1,5 @@
 import { INITIAL_OPTION_VALUES } from "./constant";
-import { buildTemplate, escapeBrackets } from "./util";
+import { buildTemplate, escapeBrackets, escapeHashtags } from "./util";
 import copy from "copy-to-clipboard";
 
 function executeCopy(
@@ -15,9 +15,11 @@ function executeCopy(
   console.log("Using title:", title);
   console.log("Using options:", options);
 
+  const processedTitle = options.escapeHashtags ? escapeHashtags(title) : title;
+
   const replaced = buildTemplate(
     options[commandKey],
-    title,
+    processedTitle,
     escapeBrackets(url)
   );
 

@@ -14,6 +14,10 @@ export function escapeBrackets(str: string) {
     .replace(/\]/g, escape);
 }
 
+export function escapeHashtags(str: string) {
+  return str.replace(/#/g, "\\#");
+}
+
 export function buildTemplate(template: string, title: string, url: string) {
   return template.replaceAll("${title}", title).replaceAll("${url}", url);
 }

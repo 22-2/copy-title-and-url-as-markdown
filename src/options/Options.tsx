@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Alert, Space, Typography, Divider } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Alert,
+  Space,
+  Typography,
+  Divider,
+  Checkbox,
+} from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { unescapeTabsAndNewLines, escapeTabsAndNewLines } from "../util";
 import { INITIAL_OPTION_VALUES } from "../constant";
@@ -18,6 +27,7 @@ export type OptionsType = {
   optionalFormat1: string;
   optionalFormat2: string;
   siteSpecificRules: SiteSpecificRule[];
+  escapeHashtags: boolean;
 };
 
 export const Options: React.FC = () => {
@@ -26,6 +36,7 @@ export const Options: React.FC = () => {
     optionalFormat1: "",
     optionalFormat2: "",
     siteSpecificRules: [],
+    escapeHashtags: false,
   });
   const [showToast, setShowToast] = useState(false);
   const [form] = Form.useForm();
@@ -37,6 +48,7 @@ export const Options: React.FC = () => {
         optionalFormat1: escapeTabsAndNewLines(savedOptions.optionalFormat1),
         optionalFormat2: escapeTabsAndNewLines(savedOptions.optionalFormat2),
         siteSpecificRules: savedOptions.siteSpecificRules || [],
+        escapeHashtags: savedOptions.escapeHashtags,
       };
 
       setOptions(escapedOptions);
@@ -55,6 +67,7 @@ export const Options: React.FC = () => {
           siteSpecificRules: (values.siteSpecificRules || []).filter(
             (r: SiteSpecificRule) => r && r.urlPattern && r.selector
           ),
+          escapeHashtags: values.escapeHashtags,
         };
 
         chrome.storage.local.set(unescapedValues, () => {
@@ -98,6 +111,9 @@ export const Options: React.FC = () => {
           </Form.Item>
           <Form.Item label="Optional Format #2" name="optionalFormat2">
             <Input />
+          </Form.Item>
+          <Form.Item name="escapeHashtags" valuePropName="checked">
+            <Checkbox>Disable hashtags by adding `\` before them</Checkbox>
           </Form.Item>
 
           <Divider />

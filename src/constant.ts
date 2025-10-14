@@ -8,4 +8,5 @@ export const INITIAL_OPTION_VALUES: OptionsType = {
   optionalFormat1: "",
   optionalFormat2: "",
   siteSpecificRules: [],
+  escapeHashtags: false,
 };
