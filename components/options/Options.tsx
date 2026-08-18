@@ -4,18 +4,27 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { unescapeTabsAndNewLines, escapeTabsAndNewLines } from "../util";
 import { INITIAL_OPTION_VALUES } from "../constant";
+import { type Theme, applyTheme } from "../theme";
 
 export type OptionsType = {
   format: string;
   optionalFormat1: string;
   optionalFormat2: string;
+  theme: Theme;
 };
+
+const THEME_OPTIONS: { value: Theme; label: string }[] = [
+  { value: "light", label: "Light" },
+  { value: "system", label: "System" },
+  { value: "dark", label: "Dark" },
+];
 
 export const Options: React.FC = () => {
   const [options, setOptions] = useState<OptionsType>({
     format: "",
     optionalFormat1: "",
     optionalFormat2: "",
+    theme: "system",
   });
   const [showToast, setShowToast] = useState(false);
 
@@ -26,12 +35,26 @@ export const Options: React.FC = () => {
         format: escapeTabsAndNewLines(savedOptions.format),
         optionalFormat1: escapeTabsAndNewLines(savedOptions.optionalFormat1),
         optionalFormat2: escapeTabsAndNewLines(savedOptions.optionalFormat2),
+        theme: savedOptions.theme ?? "system",
       });
     };
     loadOptions();
   }, []);
 
-  const handleChange = (key: keyof OptionsType, value: string) => {
+  useEffect(() => {
+    applyTheme(options.theme);
+
+    if (options.theme !== "system") {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => applyTheme("system");
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [options.theme]);
+
+  const handleChange = <K extends keyof OptionsType>(key: K, value: OptionsType[K]) => {
     setOptions({ ...options, [key]: value });
   };
 
@@ -40,28 +63,49 @@ export const Options: React.FC = () => {
       format: unescapeTabsAndNewLines(options.format),
       optionalFormat1: unescapeTabsAndNewLines(options.optionalFormat1),
       optionalFormat2: unescapeTabsAndNewLines(options.optionalFormat2),
+      theme: options.theme,
     });
     setShowToast(true);
   };
 
   return (
-    <div className="w-[300px] mx-auto mt-8">
+    <div className="mx-auto mt-8 w-[300px] text-gray-900 dark:text-gray-100">
       {showToast && (
-        <div className="mb-4 flex items-center justify-between rounded-md bg-green-100 px-4 py-3 text-sm text-green-800">
+        <div className="mb-4 flex items-center justify-between rounded-md bg-green-100 px-4 py-3 text-sm text-green-800 dark:bg-green-900 dark:text-green-100">
           <span>Successfully Saved.</span>
           <button
             onClick={() => setShowToast(false)}
-            className="ml-4 text-green-600 hover:text-green-900"
+            className="ml-4 text-green-600 hover:text-green-900 dark:text-green-300 dark:hover:text-green-100"
           >
             ✕
           </button>
         </div>
       )}
-      <h1 className="text-lg font-semibold mb-2">Options</h1>
-      <p className="text-sm mb-4">
-        You can use <code>\n</code> for new lines, and <code>\t</code> for tabs.
+      <h1 className="mb-2 text-lg font-semibold">Options</h1>
+      <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">
+        You can use <code className="rounded bg-gray-100 px-1 dark:bg-gray-700">\n</code> for new
+        lines, and <code className="rounded bg-gray-100 px-1 dark:bg-gray-700">\t</code> for tabs.
       </p>
       <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <Label>Theme</Label>
+          <div className="flex overflow-hidden rounded-md border border-gray-300 dark:border-gray-600">
+            {THEME_OPTIONS.map(({ value, label }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => handleChange("theme", value)}
+                className={`flex-1 py-1.5 text-sm transition-colors ${
+                  options.theme === value
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="format">Format</Label>
           <Input

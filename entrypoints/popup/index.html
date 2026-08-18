@@ -2,6 +2,14 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <script>
+      chrome.storage.local.get({ theme: "system" }, function (result) {
+        const isDark =
+          result.theme === "dark" ||
+          (result.theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
