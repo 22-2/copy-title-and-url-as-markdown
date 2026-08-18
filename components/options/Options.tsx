@@ -185,7 +185,7 @@ export const Options: React.FC = () => {
             >
               <Input
                 aria-label={`URL pattern ${index + 1}`}
-                placeholder="URL pattern (e.g. https://chatgpt.com/*)"
+                placeholder="URL pattern (e.g. https://chatgpt.com/c/*)"
                 value={rule.urlPattern}
                 onChange={(event) => updateTitleSuffixRule(index, "urlPattern", event.target.value)}
               />

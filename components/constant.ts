@@ -4,7 +4,7 @@ import type { OptionsType, TitleSuffixRule } from "./options/Options";
 export const DEFAULT_FORMAT = "[${title}](${url})";
 
 export const DEFAULT_TITLE_SUFFIX_RULES: TitleSuffixRule[] = [
-  { urlPattern: "https://chatgpt.com/*", suffix: " - ChatGPT" },
+  { urlPattern: "https://chatgpt.com/c/*", suffix: " - ChatGPT" },
 ];
 
 export const INITIAL_OPTION_VALUES: OptionsType = {
