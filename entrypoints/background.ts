@@ -1,7 +1,12 @@
 import { INITIAL_OPTION_VALUES } from "../components/constant";
 import type { CopyToClipboardMessage } from "../components/messages";
 import type { OptionsType } from "../components/options/Options";
-import { buildTemplate, escapeBrackets, escapeHashtags } from "../components/util";
+import {
+  appendTitleSuffix,
+  buildTemplate,
+  escapeBrackets,
+  escapeHashtags,
+} from "../components/util";
 
 const OFFSCREEN_URL = "/offscreen.html";
 
@@ -52,10 +57,9 @@ export default defineBackground(() => {
     const key = `optionalFormat${formatIndex}` as "optionalFormat1" | "optionalFormat2";
     const options = (await browser.storage.local.get(INITIAL_OPTION_VALUES)) as OptionsType;
 
-    const title = options.escapeHashtags
-      ? escapeHashtags(activeTab.title || "")
-      : activeTab.title || "";
     const url = activeTab.url || "";
+    const titleWithSuffix = appendTitleSuffix(activeTab.title || "", url, options.titleSuffixRules);
+    const title = options.escapeHashtags ? escapeHashtags(titleWithSuffix) : titleWithSuffix;
 
     console.log(url, title);
     console.log(options);

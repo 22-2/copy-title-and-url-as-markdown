@@ -12,6 +12,12 @@ export type OptionsType = {
   optionalFormat2: string;
   theme: Theme;
   escapeHashtags: boolean;
+  titleSuffixRules: TitleSuffixRule[];
+};
+
+export type TitleSuffixRule = {
+  urlPattern: string;
+  suffix: string;
 };
 
 const THEME_OPTIONS: { value: Theme; label: string }[] = [
@@ -27,6 +33,7 @@ export const Options: React.FC = () => {
     optionalFormat2: "",
     theme: "system",
     escapeHashtags: false,
+    titleSuffixRules: [],
   });
   const [showToast, setShowToast] = useState(false);
 
@@ -39,6 +46,7 @@ export const Options: React.FC = () => {
         optionalFormat2: escapeTabsAndNewLines(savedOptions.optionalFormat2),
         theme: savedOptions.theme ?? "system",
         escapeHashtags: savedOptions.escapeHashtags ?? false,
+        titleSuffixRules: savedOptions.titleSuffixRules ?? [],
       });
     };
     loadOptions();
@@ -61,6 +69,23 @@ export const Options: React.FC = () => {
     setOptions({ ...options, [key]: value });
   };
 
+  const updateTitleSuffixRule = (index: number, key: keyof TitleSuffixRule, value: string) => {
+    const titleSuffixRules = [...options.titleSuffixRules];
+    titleSuffixRules[index] = { ...titleSuffixRules[index], [key]: value };
+    handleChange("titleSuffixRules", titleSuffixRules);
+  };
+
+  const addTitleSuffixRule = () => {
+    handleChange("titleSuffixRules", [...options.titleSuffixRules, { urlPattern: "", suffix: "" }]);
+  };
+
+  const removeTitleSuffixRule = (index: number) => {
+    handleChange(
+      "titleSuffixRules",
+      options.titleSuffixRules.filter((_, ruleIndex) => ruleIndex !== index),
+    );
+  };
+
   const onSave = async () => {
     await browser.storage.local.set({
       format: unescapeTabsAndNewLines(options.format),
@@ -68,6 +93,9 @@ export const Options: React.FC = () => {
       optionalFormat2: unescapeTabsAndNewLines(options.optionalFormat2),
       theme: options.theme,
       escapeHashtags: options.escapeHashtags,
+      titleSuffixRules: options.titleSuffixRules
+        .filter((rule) => rule.urlPattern.trim() && rule.suffix)
+        .map((rule) => ({ ...rule, urlPattern: rule.urlPattern.trim() })),
     });
     setShowToast(true);
   };
@@ -143,6 +171,44 @@ export const Options: React.FC = () => {
           />
           Disable hashtags by adding \ before them
         </label>
+        <div className="flex flex-col gap-3 border-t border-gray-200 pt-4 dark:border-gray-700">
+          <div>
+            <Label>Title suffix rules</Label>
+            <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+              Add text to titles for matching URLs. Use * as a wildcard.
+            </p>
+          </div>
+          {options.titleSuffixRules.map((rule, index) => (
+            <div
+              key={index}
+              className="flex flex-col gap-2 rounded-md border border-gray-200 p-3 dark:border-gray-700"
+            >
+              <Input
+                aria-label={`URL pattern ${index + 1}`}
+                placeholder="URL pattern (e.g. https://chatgpt.com/*)"
+                value={rule.urlPattern}
+                onChange={(event) => updateTitleSuffixRule(index, "urlPattern", event.target.value)}
+              />
+              <Input
+                aria-label={`Title suffix ${index + 1}`}
+                placeholder="Suffix (e.g.  - ChatGPT)"
+                value={rule.suffix}
+                onChange={(event) => updateTitleSuffixRule(index, "suffix", event.target.value)}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => removeTitleSuffixRule(index)}
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+          <Button type="button" variant="outline" onClick={addTitleSuffixRule}>
+            Add title suffix rule
+          </Button>
+        </div>
         <Button className="mt-2" onClick={onSave}>
           Save
         </Button>

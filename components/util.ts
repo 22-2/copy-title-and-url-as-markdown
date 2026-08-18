@@ -1,3 +1,5 @@
+import type { TitleSuffixRule } from "./options/Options";
+
 export function escapeTabsAndNewLines(str: string) {
   return str.replace(/\n/g, "\\n").replace(/\t/g, "\\t");
 }
@@ -16,6 +18,20 @@ export function escapeBrackets(str: string) {
 
 export function escapeHashtags(str: string) {
   return str.replace(/#/g, "\\#");
+}
+
+function matchesUrlPattern(urlPattern: string, url: string) {
+  if (!urlPattern) {
+    return false;
+  }
+
+  const escapedPattern = urlPattern.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*");
+  return new RegExp(`^${escapedPattern}$`).test(url);
+}
+
+export function appendTitleSuffix(title: string, url: string, rules: TitleSuffixRule[]) {
+  const matchingRule = rules.find((rule) => matchesUrlPattern(rule.urlPattern, url));
+  return matchingRule ? `${title}${matchingRule.suffix}` : title;
 }
 
 export function buildTemplate(template: string, title: string, url: string) {

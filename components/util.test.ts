@@ -3,6 +3,7 @@ import {
   unescapeTabsAndNewLines,
   escapeBrackets,
   escapeHashtags,
+  appendTitleSuffix,
   buildTemplate,
 } from "./util";
 import { describe, test, expect } from "vitest";
@@ -49,6 +50,31 @@ describe("escapeHashtags", () => {
     ["one # title # two", "one \\# title \\# two"],
   ])("escape hashtags", (arg, expected) => {
     expect(escapeHashtags(arg)).toBe(expected);
+  });
+});
+
+describe("appendTitleSuffix", () => {
+  test.each([
+    {
+      title: "卵の摂取量相談",
+      url: "https://chatgpt.com/c/123",
+      rules: [{ urlPattern: "https://chatgpt.com/*", suffix: " - ChatGPT" }],
+      expected: "卵の摂取量相談 - ChatGPT",
+    },
+    {
+      title: "A title",
+      url: "https://example.com/page",
+      rules: [{ urlPattern: "https://chatgpt.com/*", suffix: " - ChatGPT" }],
+      expected: "A title",
+    },
+    {
+      title: "A title",
+      url: "https://chatgpt.com/c/123",
+      rules: [{ urlPattern: "https://chatgpt.com/c/*", suffix: " - ChatGPT" }],
+      expected: "A title - ChatGPT",
+    },
+  ])("append title suffix", ({ title, url, rules, expected }) => {
+    expect(appendTitleSuffix(title, url, rules)).toBe(expected);
   });
 });
 

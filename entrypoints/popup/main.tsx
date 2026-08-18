@@ -2,7 +2,12 @@ import "../../components/globals.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Popup } from "../../components/popup/Popup";
-import { escapeBrackets, escapeHashtags, copyToClipboard } from "../../components/util";
+import {
+  appendTitleSuffix,
+  escapeBrackets,
+  escapeHashtags,
+  copyToClipboard,
+} from "../../components/util";
 import { INITIAL_OPTION_VALUES } from "../../components/constant";
 import type { OptionsType } from "../../components/options/Options";
 import { applyTheme } from "../../components/theme";
@@ -17,8 +22,9 @@ async function main() {
   const options = (await browser.storage.local.get(INITIAL_OPTION_VALUES)) as OptionsType;
   applyTheme(options.theme);
   const tab = tabs[0];
-  const title = options.escapeHashtags ? escapeHashtags(tab.title || "") : tab.title || "";
   const url = tab.url || "";
+  const titleWithSuffix = appendTitleSuffix(tab.title || "", url, options.titleSuffixRules);
+  const title = options.escapeHashtags ? escapeHashtags(titleWithSuffix) : titleWithSuffix;
   copyToClipboard(options.format, title, escapeBrackets(url));
 
   ReactDOM.createRoot(document.getElementById("root")!).render(
