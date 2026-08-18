@@ -2,8 +2,9 @@ import "../../components/globals.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Popup } from "../../components/popup/Popup";
-import { escapeBrackets, copyToClipboard } from "../../components/util";
-import { DEFAULT_FORMAT } from "../../components/constant";
+import { escapeBrackets, escapeHashtags, copyToClipboard } from "../../components/util";
+import { INITIAL_OPTION_VALUES } from "../../components/constant";
+import type { OptionsType } from "../../components/options/Options";
 import { applyTheme } from "../../components/theme";
 
 const queryInfo = {
@@ -13,16 +14,10 @@ const queryInfo = {
 
 async function main() {
   const tabs = await browser.tabs.query(queryInfo);
-  const options = (await browser.storage.local.get({
-    format: DEFAULT_FORMAT,
-    theme: "system",
-  })) as {
-    format: string;
-    theme: "light" | "dark" | "system";
-  };
+  const options = (await browser.storage.local.get(INITIAL_OPTION_VALUES)) as OptionsType;
   applyTheme(options.theme);
   const tab = tabs[0];
-  const title = tab.title || "";
+  const title = options.escapeHashtags ? escapeHashtags(tab.title || "") : tab.title || "";
   const url = tab.url || "";
   copyToClipboard(options.format, title, escapeBrackets(url));
 

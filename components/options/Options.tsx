@@ -11,6 +11,7 @@ export type OptionsType = {
   optionalFormat1: string;
   optionalFormat2: string;
   theme: Theme;
+  escapeHashtags: boolean;
 };
 
 const THEME_OPTIONS: { value: Theme; label: string }[] = [
@@ -25,6 +26,7 @@ export const Options: React.FC = () => {
     optionalFormat1: "",
     optionalFormat2: "",
     theme: "system",
+    escapeHashtags: false,
   });
   const [showToast, setShowToast] = useState(false);
 
@@ -36,6 +38,7 @@ export const Options: React.FC = () => {
         optionalFormat1: escapeTabsAndNewLines(savedOptions.optionalFormat1),
         optionalFormat2: escapeTabsAndNewLines(savedOptions.optionalFormat2),
         theme: savedOptions.theme ?? "system",
+        escapeHashtags: savedOptions.escapeHashtags ?? false,
       });
     };
     loadOptions();
@@ -64,6 +67,7 @@ export const Options: React.FC = () => {
       optionalFormat1: unescapeTabsAndNewLines(options.optionalFormat1),
       optionalFormat2: unescapeTabsAndNewLines(options.optionalFormat2),
       theme: options.theme,
+      escapeHashtags: options.escapeHashtags,
     });
     setShowToast(true);
   };
@@ -130,6 +134,15 @@ export const Options: React.FC = () => {
             value={options.optionalFormat2}
           />
         </div>
+        <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          <input
+            type="checkbox"
+            checked={options.escapeHashtags}
+            onChange={(event) => handleChange("escapeHashtags", event.target.checked)}
+            className="h-4 w-4 accent-blue-600"
+          />
+          Disable hashtags by adding \ before them
+        </label>
         <Button className="mt-2" onClick={onSave}>
           Save
         </Button>

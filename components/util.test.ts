@@ -2,6 +2,7 @@ import {
   escapeTabsAndNewLines,
   unescapeTabsAndNewLines,
   escapeBrackets,
+  escapeHashtags,
   buildTemplate,
 } from "./util";
 import { describe, test, expect } from "vitest";
@@ -38,6 +39,16 @@ describe("escapeBrackets", () => {
     ["https://example.com/[foo]", "https://example.com/%5Bfoo%5D"],
   ])("escape brackets", (arg, expected) => {
     expect(escapeBrackets(arg)).toBe(expected);
+  });
+});
+
+describe("escapeHashtags", () => {
+  test.each([
+    ["title", "title"],
+    ["# title", "\\# title"],
+    ["one # title # two", "one \\# title \\# two"],
+  ])("escape hashtags", (arg, expected) => {
+    expect(escapeHashtags(arg)).toBe(expected);
   });
 });
 
